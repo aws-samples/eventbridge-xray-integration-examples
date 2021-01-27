@@ -1,0 +1,17 @@
+{
+    "Comment": "One-step Step Function to log event",
+    "StartAt": "Logger",
+    "States": {
+      "Logger": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "FunctionName": "${LoggerFunctionArn}",
+          "Payload": {
+            "Input.$": "$"
+          }
+        },
+        "End": true
+      }
+    }
+  }

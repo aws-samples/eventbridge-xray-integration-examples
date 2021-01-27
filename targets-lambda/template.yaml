@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: EventBridge-Xray - Lambda target
+
+Parameters:
+  EventSource:
+    Type: String
+    Description: Webhook source 
+    Default: 'webhook'
+
+Resources:
+  ConsumerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.handler
+      MemorySize: 128
+      Timeout: 3
+      Runtime: nodejs12.x
+      Tracing: Active
+
+  EventRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: "EventRule"
+      State: "ENABLED"
+      EventPattern: 
+        account: 
+          - !Sub '${AWS::AccountId}'
+        source:
+          - !Ref EventSource
+        detail:
+          apiEvent:
+            target:
+              - 'lambda'          
+      Targets: 
+        - Arn: !GetAtt ConsumerFunction.Arn
+          Id: "ConsumerTarget"
+
+  PermissionForEventsToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: 
+        Ref: "ConsumerFunction"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt EventRule.Arn

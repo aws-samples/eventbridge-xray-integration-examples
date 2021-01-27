@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: EventBridge-Xray - API Gateway webhook to EventBridge 
+
+Parameters:
+  EventSource:
+    Type: String
+    Description: Webhook source 
+    Default: 'webhook'
+
+Resources:
+  WebhookApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      TracingEnabled: True
+      StageName: Prod
+
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.handler
+      MemorySize: 128
+      Timeout: 3
+      Runtime: nodejs12.x
+      Tracing: Active 
+      Environment:
+        Variables:
+          EVENTSOURCE: !Ref EventSource
+      Policies:
+        - Statement:
+            -
+              Effect: Allow
+              Action:
+                - events:PutEvents
+              Resource: '*'
+      Events:
+        apiGET:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+            RestApiId: !Ref WebhookApi
+
+Outputs:
+  WebhookApiUrl:
+    Description: "API Gateway endpoint for webhook"
+    Value: !Sub "https://${WebhookApi}.execute-api.${AWS::Region}.amazonaws.com"

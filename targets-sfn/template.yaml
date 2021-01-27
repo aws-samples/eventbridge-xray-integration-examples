@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: EventBridge-Xray - Step Functions target
+
+Parameters:
+  EventSource:
+    Type: String
+    Description: Webhook source 
+    Default: 'webhook'
+
+Resources:
+  LoggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.handler
+      MemorySize: 128
+      Timeout: 3
+      Runtime: nodejs12.x
+      Tracing: Active
+
+  WorkFlowExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              !Sub events.amazonaws.com
+          Action: sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: InvokeStepFunctionsPolicy
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Action:
+            - states:StartExecution
+            Resource: !Ref WorkFlowStepFunctions
+
+  # Step Functions state machine
+  WorkFlowStepFunctions:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: definition.asl.json
+      DefinitionSubstitutions:
+        LoggerFunctionArn: !GetAtt LoggerFunction.Arn
+      Tracing:
+        Enabled: True
+      Events:
+        UploadComplete:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              account: 
+                - !Sub '${AWS::AccountId}'
+              source:
+                - !Ref EventSource
+              detail:
+                apiEvent:
+                  target:
+                    - 'sfn'
+      Policies: # Find out more about SAM policy templates: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
+        - AWSXRayDaemonWriteAccess
+        - LambdaInvokePolicy:
+            FunctionName: !Ref LoggerFunction
+
+
