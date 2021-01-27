@@ -45,13 +45,13 @@ When prompted for parameters, enter:
 
 2. Note the API endpoint created by the template.
 
-3. Test the API webhook using curl or Postman. The endpoint accepts a query parameter that is stored in the event before being put on the event bus. The following query parameter options are valid:
+3. Test the API webhook using [curl](https://curl.se/) or [Postman](https://www.postman.com/). The endpoint accepts a query parameter that is stored in the event before being put on the event bus. The following query parameter options are valid:
 
 - Routes to the Lambda consumer: https://YOUR-API-ID.execute-api.sa-east-1.amazonaws.com/Prod?target=lambda
 - Routes to the Step Functions consumer: https://YOUR-API-ID.execute-api.sa-east-1.amazonaws.com/Prod?target=sfn
 - Routes to an API Gateway consumer: https://YOUR-API-ID.execute-api.sa-east-1.amazonaws.com/Prod?target=apigw
 
-## Deploy the Lambda consumer
+## Deploy and test the Lambda consumer
 
 1. Run:
 
@@ -69,7 +69,9 @@ When prompted for parameters, enter:
 
 - https://YOUR-API-ID.execute-api.sa-east-1.amazonaws.com/Prod?target=lambda
 
-## Deploy the Step Functions consumer
+3. Open the [X-Ray console](console.aws.amazon.com/xray/home), select *Traces* from the menu, and select the most recent trace to view the the request from webhook through to Lambda.
+
+## Deploy and test the Step Functions consumer
 
 1. Run:
 
@@ -86,6 +88,8 @@ When prompted for parameters, enter:
 2. Route an event to the Lambda consumer by using curl or Postman to invoke the webhook:
 
 - https://YOUR-API-ID.execute-api.sa-east-1.amazonaws.com/Prod?target=sfn
+
+3. Open the [X-Ray console](console.aws.amazon.com/xray/home), select *Traces* from the menu, and select the most recent trace to view the the request from webhook through to Step Functions.
 
 ## Create a Lambda layer with the X-Ray SDK
 
