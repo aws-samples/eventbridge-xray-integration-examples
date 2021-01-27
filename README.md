@@ -103,7 +103,7 @@ npm install
 mkdir ./layer/nodejs –p
 mv ./node_modules ./layer/nodejs
 ```
-1.	Next, deploy the AWS SAM template to create the layer:
+2.	Next, deploy the AWS SAM template to create the layer:
 sam deploy --guided
 
 When prompted for parameters, enter:
@@ -111,7 +111,7 @@ When prompted for parameters, enter:
 - AWS Region: your preferred AWS Region (e.g. us-east-1)
 - Accept all other defaults.
 
-1.	After the deployment completes, the new Lambda layer is available to use. Run this command to see the available layers:
+3.	After the deployment completes, the new Lambda layer is available to use. Run this command to see the available layers:
 
 ```
 aws lambda list-layers
