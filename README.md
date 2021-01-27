@@ -98,7 +98,7 @@ You can create a Lambda layer containing the X-Ray SDK, making it easier to add 
 1. Run:
 
 ```
-cd ./xray-layer
+cd ./aws-xray-sdk-layer
 npm install
 mkdir ./layer/nodejs –p
 mv ./node_modules ./layer/nodejs
