@@ -107,7 +107,7 @@ mv ./node_modules ./layer/nodejs
 sam deploy --guided
 
 When prompted for parameters, enter:
-- Stack Name: AWS SDK layer
+- Stack Name: aws-sdk-layer
 - AWS Region: your preferred AWS Region (e.g. us-east-1)
 - Accept all other defaults.
 
