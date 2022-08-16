@@ -10,7 +10,7 @@ Resources:
       Description: AWS-X-RAY-SDK-v3_2_0
       ContentUri: ./layer
       CompatibleRuntimes:
-        - nodejs12.x
+        - nodejs16.x
       LicenseInfo: 'Available under the MIT-0 license.'
       RetentionPolicy: Retain
     
