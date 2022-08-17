@@ -22,7 +22,7 @@ Resources:
       Handler: app.handler
       MemorySize: 128
       Timeout: 3
-      Runtime: nodejs12.x
+      Runtime: nodejs16.x
       Tracing: Active 
       Environment:
         Variables:
